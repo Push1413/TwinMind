@@ -1,33 +1,50 @@
 # Gradle files
 .gradle/
 build/
+**/build/
 
-# Local configuration file (sdk path, etc)
+# Local configuration (e.g., SDK paths)
 local.properties
 
-# Log/OS Files
+# Log and OS files
 *.log
+.DS_Store
+Thumbs.db
 
-# Android Studio generated files and folders
+# Android Studio generated
 captures/
 .externalNativeBuild/
 .cxx/
 *.apk
 output.json
 
-# IntelliJ
+# Jetpack Compose
+*.snap
+
+# IntelliJ / Android Studio
 *.iml
 .idea/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
-# Keystore files
+# VS Code
+.vscode/
+
+# Keystore files (NEVER commit these)
 *.jks
 *.keystore
+*.pem
+*.key
 
-# Google Services (e.g. APIs or Firebase)
+# Firebase / Google Services
 google-services.json
+crashlytics-build.properties
 
-# Android Profiling
+# Profiling files
 *.hprof
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
