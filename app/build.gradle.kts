@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics.gradle)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -51,6 +52,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.android)
+    implementation(libs.androidx.navigation.compose.jvmstubs)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,4 +68,16 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
     implementation(libs.firebase.crashlytics)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.koin)
+
+    implementation(libs.bundles.coroutines)
+    implementation(libs.datastore.preferences)
+
+    implementation(libs.material.icons.extended)
 }

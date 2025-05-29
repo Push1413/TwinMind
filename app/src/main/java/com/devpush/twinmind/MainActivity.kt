@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.devpush.twinmind.presentation.navigation.AppNavGraph
 import com.devpush.twinmind.ui.theme.TwinMindTheme
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 
@@ -29,29 +30,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             TwinMindTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CrashTestScreen(innerPadding)
+
+                    AppNavGraph(modifier = Modifier.padding(innerPadding))
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun CrashTestScreen(innerPadding: androidx.compose.foundation.layout.PaddingValues) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Crashlytics Test", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            FirebaseCrashlytics.getInstance().log("User clicked crash button")
-            throw RuntimeException("Test Crash from Jetpack Compose")
-        }) {
-            Text("Trigger Crash")
         }
     }
 }

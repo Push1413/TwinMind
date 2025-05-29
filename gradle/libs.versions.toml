@@ -14,6 +14,14 @@ play-services-auth = "21.0.0"
 google-services = "4.4.1"
 crashlytics = "18.6.1"
 firebase-crashlytics-gradle = "2.9.9"
+room = "2.6.1"
+ktor = "2.3.9"
+koin = "3.5.3"
+coroutines = "1.8.1"
+datastore = "1.1.1"
+navigationRuntimeAndroid = "2.9.0"
+navigationComposeJvmstubs = "2.9.0"
+materialIconsExtended = "1.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,8 +41,43 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebase-auth" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "play-services-auth" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "crashlytics" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+# Ktor Client
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+# Koin Core
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+# Coroutines
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+# Jetpack DataStore (Preferences)
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
+androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+
 [bundles]
 firebase = ["firebase-auth", "play-services-auth"]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-okhttp",
+    "ktor-client-content-negotiation",
+    "ktor-serialization-gson",
+    "ktor-client-logging"
+]
+
+koin = [
+    "koin-android",
+    "koin-compose"
+]
+
+coroutines = ["coroutines-core", "coroutines-android"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -42,4 +85,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }
+ksp = { id = "com.google.devtools.ksp", version = "1.9.22-1.0.16" }
+
 
