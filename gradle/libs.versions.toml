@@ -21,7 +21,7 @@ coroutines = "1.8.1"
 datastore = "1.1.1"
 navigation = "2.9.0"
 materialIconsExtended = "1.6.2"
-
+timber = "5.0.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -62,7 +62,7 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
-
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 [bundles]
 firebase = ["firebase-auth", "play-services-auth"]
 ktor = [

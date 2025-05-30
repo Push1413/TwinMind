@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TwinMind</string>
+    <string name="term">Terms of Service</string>
+    <string name="privacy">Privacy Policy</string>
 </resources>

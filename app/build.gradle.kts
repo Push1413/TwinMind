@@ -80,4 +80,5 @@ dependencies {
     implementation(libs.datastore.preferences)
 
     implementation(libs.material.icons.extended)
+    implementation(libs.timber)
 }

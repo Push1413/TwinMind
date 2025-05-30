@@ -1,5 +1,8 @@
 package com.devpush.twinmind.presentation.auth
 
+
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +30,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,16 +38,51 @@ import androidx.navigation.NavHostController
 import com.devpush.twinmind.R
 import com.devpush.twinmind.data.UserPreferencesRepository
 import com.devpush.twinmind.presentation.navigation.Screen
+import com.devpush.twinmind.ui.theme.BeigeBottom
+import com.devpush.twinmind.ui.theme.BlueTop
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    onGoogleSignIn: () -> Unit = {},
     onAppleSignIn: () -> Unit = {}
 ) {
+    val context = navController.context
     val coroutineScope = rememberCoroutineScope()
-    val userPreferencesRepository = UserPreferencesRepository(navController.context) // Use navController.context
+    val userPreferencesRepository = UserPreferencesRepository(context)
+
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken
+                if (idToken != null) {
+                    FirebaseAuthHelper.signInWithFirebase(
+                        idToken = idToken,
+                        context = context,
+                        navController = navController,
+                        onLoginSuccess = {
+                            coroutineScope.launch {
+                                userPreferencesRepository.saveLoginStatus(true)
+
+                                navController.navigate(Screen.Settings.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                    )
+                }
+            } catch (e: ApiException) {
+                Timber.tag("LoginScreen").e(" - Google sign-in failed ${e.message}")
+            }
+        }
 
     Box(
         modifier = Modifier
@@ -51,8 +90,8 @@ fun LoginScreen(
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF5A7CA7), // top blue
-                        Color(0xFFDDB893)  // bottom warm beige
+                        BlueTop,
+                        BeigeBottom
                     )
                 )
             )
@@ -79,13 +118,15 @@ fun LoginScreen(
                 icon = painterResource(id = R.drawable.google),
                 text = "Continue with Google",
                 onClick = {
-                    coroutineScope.launch {
-                        userPreferencesRepository.saveLoginStatus(true)
-                        navController.navigate(Screen.Settings.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
-                    }
-                    onGoogleSignIn() // Call original lambda if needed
+                    val signInClient = FirebaseAuthHelper.getGoogleSignInClient(context)
+                    launcher.launch(signInClient.signInIntent)
+//                    coroutineScope.launch {
+//                        userPreferencesRepository.saveLoginStatus(true)
+//                        navController.navigate(Screen.Settings.route) {
+//                            popUpTo(Screen.Login.route) { inclusive = true }
+//                        }
+//                    }
+
                 }
             )
 
@@ -114,14 +155,14 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = "Privacy Policy",
+                text = stringResource(R.string.privacy),
                 color = Color.White,
                 fontSize = 12.sp,
                 modifier = Modifier.clickable { /* TODO */ }
             )
             Spacer(modifier = Modifier.width(24.dp))
             Text(
-                text = "Terms of Service",
+                text = stringResource(R.string.term),
                 color = Color.White,
                 fontSize = 12.sp,
                 modifier = Modifier.clickable { /* TODO */ }
