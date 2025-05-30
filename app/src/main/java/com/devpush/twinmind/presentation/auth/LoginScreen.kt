@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devpush.twinmind.R
+import com.devpush.twinmind.data.UserPreferencesRepository
+import com.devpush.twinmind.presentation.navigation.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -38,6 +42,9 @@ fun LoginScreen(
     onGoogleSignIn: () -> Unit = {},
     onAppleSignIn: () -> Unit = {}
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val userPreferencesRepository = UserPreferencesRepository(navController.context) // Use navController.context
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +66,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_twinmind_logo),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "TwinMind Logo",
                 modifier = Modifier
                     .height(120.dp)
@@ -69,18 +76,34 @@ fun LoginScreen(
 
             // Google Sign-In Button
             SignInButton(
-                icon = painterResource(id = R.drawable.rounded_login_24),
+                icon = painterResource(id = R.drawable.google),
                 text = "Continue with Google",
-                onClick = onGoogleSignIn
+                onClick = {
+                    coroutineScope.launch {
+                        userPreferencesRepository.saveLoginStatus(true)
+                        navController.navigate(Screen.Settings.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    onGoogleSignIn() // Call original lambda if needed
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Apple Sign-In Button
             SignInButton(
-                icon = painterResource(id = R.drawable.ic_apple),
+                icon = painterResource(id = R.drawable.apple),
                 text = "Continue with Apple",
-                onClick = onAppleSignIn
+                onClick = {
+                    coroutineScope.launch {
+                        userPreferencesRepository.saveLoginStatus(true)
+                        navController.navigate(Screen.Settings.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                    onAppleSignIn() // Call original lambda if needed
+                }
             )
         }
 
@@ -127,7 +150,7 @@ fun SignInButton(
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(48.dp)
                     .padding(end = 12.dp)
             )
             Text(

@@ -13,9 +13,10 @@ import com.devpush.twinmind.presentation.setting.SettingsScreen
 fun AppNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Screen.Login.route
+    isUserLoggedIn: Boolean
 ) {
-    NavHost(navController = navController, startDestination = startDestination) {
+    val startDestination = if (isUserLoggedIn) Screen.Settings.route else Screen.Login.route
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
 
         composable(Screen.Login.route) {
             LoginScreen(navController)
