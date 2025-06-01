@@ -34,6 +34,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    packagingOptions {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -81,4 +86,8 @@ dependencies {
 
     implementation(libs.material.icons.extended)
     implementation(libs.timber)
+
+    implementation(libs.google.api.services.calendar)
+    implementation(libs.google.api.client.android)
+    implementation(libs.google.http.client.gson)
 }

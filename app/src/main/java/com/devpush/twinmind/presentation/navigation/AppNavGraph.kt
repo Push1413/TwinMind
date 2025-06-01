@@ -7,6 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.devpush.twinmind.presentation.auth.LoginScreen
+import com.devpush.twinmind.presentation.calendar.CalendarScreen
+import com.devpush.twinmind.presentation.main.MainScreen
+import com.devpush.twinmind.presentation.memories.MemoriesScreen
+import com.devpush.twinmind.presentation.questions.QuestionsScreen
 import com.devpush.twinmind.presentation.setting.SettingsScreen
 
 @Composable
@@ -22,24 +26,24 @@ fun AppNavGraph(
             LoginScreen(navController)
         }
 
-//        composable(Screen.Calendar.route) {
-//            CalendarScreen(navController)
-//        }
-//
-//        composable(Screen.Transcription.route) {
-//            TranscriptionScreen(navController)
-//        }
-//
-//        composable(Screen.Chat.route) {
-//            ChatScreen(navController)
-//        }
-//
-//        composable(Screen.Summary.route) {
-//            SummaryScreen(navController)
-//        }
+        composable(Screen.Calendar.route) {
+            CalendarScreen()
+        }
+
+        composable(Screen.Question.route) {
+            QuestionsScreen()
+        }
+
+        composable(Screen.Memories.route) {
+            MemoriesScreen()
+        }
 
         composable(Screen.Settings.route) {
             SettingsScreen(navController)
+        }
+
+        composable(Screen.Main.route) {
+            MainScreen()
         }
     }
 }

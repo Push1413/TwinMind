@@ -2,4 +2,7 @@
     <string name="app_name">TwinMind</string>
     <string name="term">Terms of Service</string>
     <string name="privacy">Privacy Policy</string>
+    <string name="screen_title_memories">Memories</string>
+    <string name="screen_title_calendar">Calendar</string>
+    <string name="screen_title_questions">Questions</string>
 </resources>

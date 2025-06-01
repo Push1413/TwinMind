@@ -6,10 +6,11 @@ import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.QuestionAnswer
 
-sealed class Screen(val route: String, val title: String = "", val icon: ImageVector? = null) {
+sealed class Screen(val route: String) {
     object Login : Screen("login")
     object Settings : Screen("settings")
-    object Memories : Screen("memories", "Memories", Icons.Default.Photo)
-    object Calendar : Screen("calendar", "Calendar", Icons.Default.CalendarToday)
-    object Question : Screen("question", "Ask AI", Icons.Default.QuestionAnswer)
+    object Memories : Screen("memories")
+    object Calendar : Screen("calendar")
+    object Question : Screen("question")
+    object Main : Screen("main")
 }

@@ -69,7 +69,7 @@ fun LoginScreen(
                             coroutineScope.launch {
                                 userPreferencesRepository.saveLoginStatus(true)
 
-                                navController.navigate(Screen.Settings.route) {
+                                navController.navigate(Screen.Main.route) {
                                     popUpTo(navController.graph.startDestinationId) {
                                         inclusive = true
                                     }
