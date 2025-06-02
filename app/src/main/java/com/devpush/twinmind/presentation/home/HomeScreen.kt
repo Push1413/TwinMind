@@ -1,4 +1,4 @@
-package com.devpush.twinmind.presentation.main
+package com.devpush.twinmind.presentation.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -26,6 +26,7 @@ import com.devpush.twinmind.presentation.navigation.BottomNavGraph
 import com.devpush.twinmind.presentation.navigation.BottomNavItem
 import com.devpush.twinmind.presentation.navigation.Screen
 import com.devpush.twinmind.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(appNavController: NavHostController) {

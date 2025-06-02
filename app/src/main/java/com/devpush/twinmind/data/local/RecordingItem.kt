@@ -11,5 +11,5 @@ data class RecordingItem(
     val timestamp: Long,
     val durationMillis: Long,
     val isSynced: Boolean = false,
-    val transcription: String? = null
+    val transcription: String? = null,
 )

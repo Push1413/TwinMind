@@ -10,13 +10,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.core.content.ContextCompat
-import com.devpush.twinmind.data.UserPreferencesRepository
 import com.devpush.twinmind.presentation.navigation.AppNavGraph
 import com.devpush.twinmind.ui.theme.TwinMindTheme
 import timber.log.Timber
 import androidx.compose.runtime.getValue
+import com.devpush.twinmind.domain.repository.UserPreferencesRepository
+import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
+
+    private val userPreferencesRepository: UserPreferencesRepository by lazy {
+        get<UserPreferencesRepository>()
+    }
 
     private val requestCalendarPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -32,7 +37,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val userPreferencesRepository = UserPreferencesRepository(applicationContext)
         setContent {
             TwinMindTheme {
                 val isLoggedIn by userPreferencesRepository.isLoggedIn.collectAsState(initial = false)
@@ -44,11 +48,14 @@ class MainActivity : ComponentActivity() {
     }
 
     fun checkAndRequestCalendarPermissions() {
-        val readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
-        val writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+        val readPermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+        val writePermission =
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
 
         if (readPermission == PackageManager.PERMISSION_GRANTED &&
-            writePermission == PackageManager.PERMISSION_GRANTED) {
+            writePermission == PackageManager.PERMISSION_GRANTED
+        ) {
             Timber.d("Calendar permissions already granted.")
         } else {
             Timber.i("Requesting calendar permissions.")

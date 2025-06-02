@@ -53,36 +53,36 @@ fun CircularWavyProgressIndicatorWithIcon(
     onIconClick: (() -> Unit),
     iconContentDescription: String? = null,
     indicatorColor: Color = MaterialTheme.colorScheme.primary,
-    trackColor: Color = MaterialTheme.colorScheme.surfaceVariant
+    trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
     Box(
         modifier = modifier, // Apply the passed modifier to the outer Box
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularWavyProgressIndicator(
             progress = progress,
             modifier = Modifier.size(indicatorSize),
             color = indicatorColor,
-            trackColor = trackColor
+            trackColor = trackColor,
         )
 
-        val iconModifier = Modifier
-            .size(iconSize)
-            .clip(MaterialTheme.shapes.small)
-            .clickable(
-                onClick = onIconClick,
-                role = Role.Button,
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = true)
-            )
+        val iconModifier =
+            Modifier
+                .size(iconSize)
+                .clip(MaterialTheme.shapes.small)
+                .clickable(
+                    onClick = onIconClick,
+                    role = Role.Button,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(bounded = true),
+                )
 
         Icon(
             imageVector = icon,
             contentDescription = iconContentDescription,
             modifier = iconModifier,
-            tint = iconTint
+            tint = iconTint,
         )
-
     }
 }
 
@@ -96,24 +96,25 @@ fun CircularWavyProgressIndicatorWithTimer(
     trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     timerText: String, // Timer text is now a required parameter
     timerTextStyle: TextStyle = MaterialTheme.typography.labelMedium,
-    timerTextColor: Color = MaterialTheme.colorScheme.onSurface
+    timerTextColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularWavyProgressIndicator(
             progress = progress,
             modifier = Modifier.size(indicatorSize),
             color = indicatorColor,
-            trackColor = trackColor
+            trackColor = trackColor,
         )
         Text(
             text = timerText,
             style = timerTextStyle,
             color = timerTextColor,
-            modifier = Modifier
-                .align(Alignment.Center)
+            modifier =
+                Modifier
+                    .align(Alignment.Center),
         )
     }
 }
@@ -128,9 +129,8 @@ fun CountdownProgressIndicator(
     indicatorColor: Color = MaterialTheme.colorScheme.primary,
     trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     timerTextStyle: TextStyle = MaterialTheme.typography.labelMedium,
-    timerTextColor: Color = MaterialTheme.colorScheme.onSurface
+    timerTextColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-
     var remainingTimeInSeconds by remember { mutableStateOf(totalDurationInSeconds) }
     var currentProgress by remember { mutableStateOf(1f) }
 
@@ -158,17 +158,19 @@ fun CountdownProgressIndicator(
 
     // Calculate progress based on remaining time
     // Ensure totalDurationInSeconds is not zero to avoid division by zero
-    currentProgress = if (totalDurationInSeconds > 0) {
-        (remainingTimeInSeconds.toFloat() / totalDurationInSeconds.toFloat()).coerceIn(0f, 1f)
-    } else {
-        1f // Default to full progress if duration is 0
-    }
+    currentProgress =
+        if (totalDurationInSeconds > 0) {
+            (remainingTimeInSeconds.toFloat() / totalDurationInSeconds.toFloat()).coerceIn(0f, 1f)
+        } else {
+            1f // Default to full progress if duration is 0
+        }
 
-    val formattedTime = remember(remainingTimeInSeconds) {
-        val minutes = TimeUnit.SECONDS.toMinutes(remainingTimeInSeconds)
-        val seconds = remainingTimeInSeconds - TimeUnit.MINUTES.toSeconds(minutes)
-        String.format("%02d:%02d", minutes, seconds)
-    }
+    val formattedTime =
+        remember(remainingTimeInSeconds) {
+            val minutes = TimeUnit.SECONDS.toMinutes(remainingTimeInSeconds)
+            val seconds = remainingTimeInSeconds - TimeUnit.MINUTES.toSeconds(minutes)
+            String.format("%02d:%02d", minutes, seconds)
+        }
 
     CircularWavyProgressIndicatorWithTimer(
         progress = { currentProgress },
@@ -178,7 +180,6 @@ fun CountdownProgressIndicator(
         indicatorColor = indicatorColor,
         trackColor = trackColor,
         timerTextStyle = timerTextStyle,
-        timerTextColor = timerTextColor
+        timerTextColor = timerTextColor,
     )
-
 }

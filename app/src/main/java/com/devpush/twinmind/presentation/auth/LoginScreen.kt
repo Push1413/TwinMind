@@ -1,6 +1,5 @@
 package com.devpush.twinmind.presentation.auth
 
-
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -36,13 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.devpush.twinmind.R
-import com.devpush.twinmind.data.UserPreferencesRepository
+import com.devpush.twinmind.domain.repository.UserPreferencesRepository
 import com.devpush.twinmind.presentation.navigation.Screen
 import com.devpush.twinmind.ui.theme.BeigeBottom
 import com.devpush.twinmind.ui.theme.BlueTop
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import timber.log.Timber
 
 @Composable
@@ -52,7 +52,7 @@ fun LoginScreen(
 ) {
     val context = navController.context
     val coroutineScope = rememberCoroutineScope()
-    val userPreferencesRepository = UserPreferencesRepository(context)
+    val userPreferencesRepository: UserPreferencesRepository = koinInject()
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -120,13 +120,6 @@ fun LoginScreen(
                 onClick = {
                     val signInClient = FirebaseAuthHelper.getGoogleSignInClient(context)
                     launcher.launch(signInClient.signInIntent)
-//                    coroutineScope.launch {
-//                        userPreferencesRepository.saveLoginStatus(true)
-//                        navController.navigate(Screen.Settings.route) {
-//                            popUpTo(Screen.Login.route) { inclusive = true }
-//                        }
-//                    }
-
                 }
             )
 

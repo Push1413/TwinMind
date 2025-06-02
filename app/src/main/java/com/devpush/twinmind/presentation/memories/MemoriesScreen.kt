@@ -1,22 +1,17 @@
 package com.devpush.twinmind.presentation.memories
 
 import android.Manifest
-import android.R.attr.strokeWidth
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -31,8 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devpush.twinmind.R
@@ -48,9 +41,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MemoriesScreen(
-    viewModel: MemoriesViewModel = koinViewModel()
-) {
+fun MemoriesScreen(viewModel: MemoriesViewModel = koinViewModel()) {
     val isRecording by viewModel.isRecording.collectAsState()
     val isPlaying by viewModel.isPlaying.collectAsState()
     val audioDurationSec by viewModel.currentAudioTotalDuration.collectAsState()
@@ -61,9 +52,11 @@ fun MemoriesScreen(
     var timerSeconds by remember { mutableStateOf(0) }
 
     // Animate progress (used for smoother visual)
-    val animatedProgress by animateFloatAsState(targetValue = progress,
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
-        label = "Progress")
+        label = "Progress",
+    )
 
     // Effect to increment progress only when recording
     LaunchedEffect(isRecording) {
@@ -82,18 +75,17 @@ fun MemoriesScreen(
         }
     }
 
-
-    val audioPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
-                viewModel.onAudioPermissionGranted()
-            } else {
-                viewModel.onAudioPermissionDenied()
-            }
-        }
-    )
-
+    val audioPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted ->
+                if (isGranted) {
+                    viewModel.onAudioPermissionGranted()
+                } else {
+                    viewModel.onAudioPermissionDenied()
+                }
+            },
+        )
 
     LaunchedEffect(requestAudioPermission) {
         if (requestAudioPermission) {
@@ -106,18 +98,19 @@ fun MemoriesScreen(
             FloatingActionButton(onClick = { viewModel.onRecordButtonPressed() }) {
                 Icon(
                     imageVector = if (isRecording) Icons.Filled.Stop else Icons.Filled.Mic,
-                    contentDescription = if (isRecording) "Stop Recording" else "Start Recording"
+                    contentDescription = if (isRecording) "Stop Recording" else "Start Recording",
                 )
             }
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+            contentAlignment = Alignment.Center,
         ) {
-            if (isRecording){
+            if (isRecording) {
                 CircularWavyProgressIndicatorWithIcon(
                     progress = { animatedProgress },
                     modifier = Modifier.size(100.dp),
@@ -128,10 +121,10 @@ fun MemoriesScreen(
                         viewModel.onRecordButtonPressed()
                     },
                     iconContentDescription = "Stop Action",
-                    iconTint = MaterialTheme.colorScheme.primary
+                    iconTint = MaterialTheme.colorScheme.primary,
                 )
             }
-            if (isPlaying &&  audioDurationSec > 0L){
+            if (isPlaying && audioDurationSec > 0L) {
                 CountdownProgressIndicator(
                     totalDurationInSeconds = audioDurationSec,
                     isPlaying = isPlaying,
@@ -148,13 +141,13 @@ fun MemoriesScreen(
             } else if (!isRecording && !isPlaying) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     items(recordings) { recordingItem ->
                         RecordingListItem(
                             isRecordingOn = isRecording,
                             recordingItem = recordingItem,
-                            onPlayClick = { viewModel.playRecording(recordingItem) }
+                            onPlayClick = { viewModel.playRecording(recordingItem) },
                         )
                         HorizontalDivider()
                     }
@@ -165,33 +158,43 @@ fun MemoriesScreen(
 }
 
 @Composable
-fun RecordingListItem(isRecordingOn: Boolean, recordingItem: RecordingItem, onPlayClick: () -> Unit) {
+fun RecordingListItem(
+    isRecordingOn: Boolean,
+    recordingItem: RecordingItem,
+    onPlayClick: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(
-                    R.string.rec, SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                        .format(Date(recordingItem.timestamp))
-                ),
-                style = MaterialTheme.typography.bodyMedium
+                text =
+                    stringResource(
+                        R.string.rec,
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                            .format(Date(recordingItem.timestamp)),
+                    ),
+                style = MaterialTheme.typography.bodyMedium,
             )
             Text(
-                text = stringResource(
-                    R.string.duration,
-                    formatDuration(recordingItem.durationMillis)
-                ),
-                style = MaterialTheme.typography.bodySmall
+                text =
+                    stringResource(
+                        R.string.duration,
+                        formatDuration(recordingItem.durationMillis),
+                    ),
+                style = MaterialTheme.typography.bodySmall,
             )
         }
         IconButton(onClick = onPlayClick) {
-            Icon(imageVector = if (isRecordingOn) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                 contentDescription = if (isRecordingOn) "Stop Recording" else "Start Recording")
+            Icon(
+                imageVector = if (isRecordingOn) Icons.Filled.Stop else Icons.Filled.PlayArrow,
+                contentDescription = if (isRecordingOn) "Stop Recording" else "Start Recording",
+            )
         }
     }
 }

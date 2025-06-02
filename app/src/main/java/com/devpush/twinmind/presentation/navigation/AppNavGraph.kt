@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.devpush.twinmind.presentation.auth.LoginScreen
 import com.devpush.twinmind.presentation.calendar.CalendarScreen
-import com.devpush.twinmind.presentation.main.MainScreen
+import com.devpush.twinmind.presentation.home.MainScreen
 import com.devpush.twinmind.presentation.memories.MemoriesScreen
 import com.devpush.twinmind.presentation.questions.QuestionsScreen
 import com.devpush.twinmind.presentation.setting.SettingsScreen

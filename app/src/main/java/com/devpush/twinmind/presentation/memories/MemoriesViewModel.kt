@@ -26,9 +26,8 @@ class MemoriesViewModel(
     private val application: Application,
     private val recordingDao: RecordingDao,
     private val audioRecorderHelper: AudioRecorderHelper,
-    private val audioPlayerHelper: AudioPlayerHelper
+    private val audioPlayerHelper: AudioPlayerHelper,
 ) : ViewModel() {
-
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
@@ -37,7 +36,6 @@ class MemoriesViewModel(
 
     private val _currentAudioTotalDuration = MutableStateFlow(0L)
     val currentAudioTotalDuration: StateFlow<Long> = _currentAudioTotalDuration.asStateFlow()
-
 
     private val _recordingsList = MutableStateFlow<List<RecordingItem>>(emptyList())
     val recordingsList: StateFlow<List<RecordingItem>> = _recordingsList.asStateFlow()
@@ -50,7 +48,8 @@ class MemoriesViewModel(
     private var recordingChunkJob: Job? = null
 
     init {
-        recordingDao.getAllRecordings()
+        recordingDao
+            .getAllRecordings()
             .onEach { _recordingsList.value = it }
             .launchIn(viewModelScope)
     }
@@ -75,43 +74,45 @@ class MemoriesViewModel(
             _isRecording.value = true
             // Start 30-second chunking
             recordingChunkJob?.cancel() // Cancel previous if any
-            recordingChunkJob = viewModelScope.launch {
-                while (_isRecording.value) {
-                    delay(30_000)
-                    if (_isRecording.value) { // Re-check after delay
-                        // This part is tricky: MediaRecorder typically finalizes on stop.
-                        // To save a "chunk" and continue, we need to stop, save, and restart.
-                        val chunkFile = currentRecordingFile
-                        val chunkStartTime = currentRecordingStartTime
-                        val chunkDuration = System.currentTimeMillis() - chunkStartTime
+            recordingChunkJob =
+                viewModelScope.launch {
+                    while (_isRecording.value) {
+                        delay(30_000)
+                        if (_isRecording.value) { // Re-check after delay
+                            // This part is tricky: MediaRecorder typically finalizes on stop.
+                            // To save a "chunk" and continue, we need to stop, save, and restart.
+                            val chunkFile = currentRecordingFile
+                            val chunkStartTime = currentRecordingStartTime
+                            val chunkDuration = System.currentTimeMillis() - chunkStartTime
 
-                        // Stop current recording (helper should not release if we plan to restart immediately)
-                        // For simplicity, we'll stop and then start a new one.
-                        audioRecorderHelper.stopRecording() // Finalizes the current file
+                            // Stop current recording (helper should not release if we plan to restart immediately)
+                            // For simplicity, we'll stop and then start a new one.
+                            audioRecorderHelper.stopRecording() // Finalizes the current file
 
-                        if (chunkFile != null && chunkFile.exists() && chunkFile.length() > 0) {
-                            val recordingItem = RecordingItem(
-                                filePath = chunkFile.absolutePath,
-                                timestamp = chunkStartTime,
-                                durationMillis = chunkDuration
-                            )
-                            viewModelScope.launch { recordingDao.insert(recordingItem) }
-                        }
+                            if (chunkFile != null && chunkFile.exists() && chunkFile.length() > 0) {
+                                val recordingItem =
+                                    RecordingItem(
+                                        filePath = chunkFile.absolutePath,
+                                        timestamp = chunkStartTime,
+                                        durationMillis = chunkDuration,
+                                    )
+                                viewModelScope.launch { recordingDao.insert(recordingItem) }
+                            }
 
-                        // Start new recording for the next chunk
-                        if (_isRecording.value) { // Ensure we still want to record
-                            currentRecordingFile = createNewAudioFile()
-                            currentRecordingStartTime = System.currentTimeMillis()
-                            currentRecordingFile?.let { newFile ->
-                                audioRecorderHelper.startRecording(newFile)
-                            } ?: run {
-                                // Failed to create new file, stop recording process
-                                _isRecording.value = false
+                            // Start new recording for the next chunk
+                            if (_isRecording.value) { // Ensure we still want to record
+                                currentRecordingFile = createNewAudioFile()
+                                currentRecordingStartTime = System.currentTimeMillis()
+                                currentRecordingFile?.let { newFile ->
+                                    audioRecorderHelper.startRecording(newFile)
+                                } ?: run {
+                                    // Failed to create new file, stop recording process
+                                    _isRecording.value = false
+                                }
                             }
                         }
                     }
                 }
-            }
         }
     }
 
@@ -124,11 +125,12 @@ class MemoriesViewModel(
         val startTimeToSave = currentRecordingStartTime
         if (fileToSave != null && fileToSave.exists() && fileToSave.length() > 0) {
             val duration = System.currentTimeMillis() - startTimeToSave
-            val recordingItem = RecordingItem(
-                filePath = fileToSave.absolutePath,
-                timestamp = startTimeToSave,
-                durationMillis = duration
-            )
+            val recordingItem =
+                RecordingItem(
+                    filePath = fileToSave.absolutePath,
+                    timestamp = startTimeToSave,
+                    durationMillis = duration,
+                )
             viewModelScope.launch { recordingDao.insert(recordingItem) }
         }
         currentRecordingFile = null
@@ -149,21 +151,21 @@ class MemoriesViewModel(
 
     fun playRecording(recordingItem: RecordingItem) {
         audioPlayerHelper.play(recordingItem.filePath)
-        _currentAudioTotalDuration.value = recordingItem.durationMillis/1000
+        _currentAudioTotalDuration.value = recordingItem.durationMillis / 1000
         _isPlaying.value = true
     }
+
     fun stopPlaying() {
         audioPlayerHelper.stop()
         _isPlaying.value = false
         _currentAudioTotalDuration.value = 0L
     }
 
-    private fun hasAudioPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
+    private fun hasAudioPermission(): Boolean =
+        ContextCompat.checkSelfPermission(
             application,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
         ) == PackageManager.PERMISSION_GRANTED
-    }
 
     private fun createNewAudioFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmssSSS", Locale.getDefault()).format(Date())
