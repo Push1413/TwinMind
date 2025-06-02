@@ -90,4 +90,7 @@ dependencies {
     implementation(libs.google.api.services.calendar)
     implementation(libs.google.api.client.android)
     implementation(libs.google.http.client.gson)
+
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 }

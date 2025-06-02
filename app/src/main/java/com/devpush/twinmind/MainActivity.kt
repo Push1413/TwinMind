@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
             if (readGranted && writeGranted) {
                 Timber.d("Calendar permissions granted via launcher.")
             } else {
-                Timber.w("Calendar permissions denied via launcher.")
                 Toast.makeText(this, "Calendar access not granted.", Toast.LENGTH_SHORT).show()
             }
         }
