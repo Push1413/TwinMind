@@ -18,7 +18,7 @@ object FirebaseAuthHelper {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.getString(com.devpush.twinmind.R.string.default_web_client_id))
             .requestEmail()
-            .requestScopes(Scope("https://www.googleapis.com/auth/calendar"))
+            //.requestScopes(Scope("https://www.googleapis.com/auth/calendar")) // Request access to calendar scope
             .build()
         return GoogleSignIn.getClient(context, gso)
     }

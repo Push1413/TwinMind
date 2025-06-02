@@ -19,7 +19,7 @@ fun AppNavGraph(
     navController: NavHostController = rememberNavController(),
     isUserLoggedIn: Boolean
 ) {
-    val startDestination = if (isUserLoggedIn) Screen.Settings.route else Screen.Login.route
+    val startDestination = if (isUserLoggedIn) Screen.Main.route else Screen.Login.route
     NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
 
         composable(Screen.Login.route) {
@@ -43,7 +43,7 @@ fun AppNavGraph(
         }
 
         composable(Screen.Main.route) {
-            MainScreen()
+            MainScreen(navController)
         }
     }
 }
