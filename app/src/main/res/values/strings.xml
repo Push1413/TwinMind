@@ -6,4 +6,7 @@
     <string name="screen_title_calendar">Calendar</string>
     <string name="screen_title_questions">Questions</string>
     <string name="title_name">TwinMind</string>
+    <string name="no_recordings_yet_tap_the_mic_to_start">No recordings yet. Tap the mic to start.</string>
+    <string name="rec">Rec: %1$s</string>
+    <string name="duration">Duration: %1$s</string>
 </resources>

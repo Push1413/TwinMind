@@ -32,6 +32,13 @@ class MemoriesViewModel(
     private val _isRecording = MutableStateFlow(false)
     val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+
+    private val _currentAudioTotalDuration = MutableStateFlow(0L)
+    val currentAudioTotalDuration: StateFlow<Long> = _currentAudioTotalDuration.asStateFlow()
+
+
     private val _recordingsList = MutableStateFlow<List<RecordingItem>>(emptyList())
     val recordingsList: StateFlow<List<RecordingItem>> = _recordingsList.asStateFlow()
 
@@ -142,6 +149,13 @@ class MemoriesViewModel(
 
     fun playRecording(recordingItem: RecordingItem) {
         audioPlayerHelper.play(recordingItem.filePath)
+        _currentAudioTotalDuration.value = recordingItem.durationMillis/1000
+        _isPlaying.value = true
+    }
+    fun stopPlaying() {
+        audioPlayerHelper.stop()
+        _isPlaying.value = false
+        _currentAudioTotalDuration.value = 0L
     }
 
     private fun hasAudioPermission(): Boolean {

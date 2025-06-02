@@ -28,9 +28,4 @@ class AudioPlayerHelper(private val context: Context) {
         exoPlayer?.release()
         exoPlayer = null
     }
-
-    // Optional: Add listener for playback state changes if needed later
-    // fun setPlaybackStateListener(listener: Player.Listener) {
-    // exoPlayer?.addListener(listener)
-    // }
 }
