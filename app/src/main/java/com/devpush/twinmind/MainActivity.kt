@@ -1,57 +1,63 @@
 package com.devpush.twinmind
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.core.content.ContextCompat
+import com.devpush.twinmind.data.UserPreferencesRepository
+import com.devpush.twinmind.presentation.navigation.AppNavGraph
 import com.devpush.twinmind.ui.theme.TwinMindTheme
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import timber.log.Timber
+import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
+
+    private val requestCalendarPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val readGranted = permissions[Manifest.permission.READ_CALENDAR] ?: false
+            val writeGranted = permissions[Manifest.permission.WRITE_CALENDAR] ?: false
+            if (readGranted && writeGranted) {
+                Timber.d("Calendar permissions granted via launcher.")
+            } else {
+                Toast.makeText(this, "Calendar access not granted.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val userPreferencesRepository = UserPreferencesRepository(applicationContext)
         setContent {
             TwinMindTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CrashTestScreen(innerPadding)
-                }
+                val isLoggedIn by userPreferencesRepository.isLoggedIn.collectAsState(initial = false)
+                AppNavGraph(
+                    isUserLoggedIn = isLoggedIn
+                )
             }
         }
     }
-}
 
-@Composable
-fun CrashTestScreen(innerPadding: androidx.compose.foundation.layout.PaddingValues) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Crashlytics Test", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            FirebaseCrashlytics.getInstance().log("User clicked crash button")
-            throw RuntimeException("Test Crash from Jetpack Compose")
-        }) {
-            Text("Trigger Crash")
+    fun checkAndRequestCalendarPermissions() {
+        val readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+        val writePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+
+        if (readPermission == PackageManager.PERMISSION_GRANTED &&
+            writePermission == PackageManager.PERMISSION_GRANTED) {
+            Timber.d("Calendar permissions already granted.")
+        } else {
+            Timber.i("Requesting calendar permissions.")
+            requestCalendarPermissionsLauncher.launch(
+                arrayOf(
+                    Manifest.permission.READ_CALENDAR,
+                    Manifest.permission.WRITE_CALENDAR
+                )
+            )
         }
     }
 }
